@@ -1,19 +1,25 @@
-export default function EditTopic() {
-  return (
-    <form className="flex flex-col gap-3">
-      <input
-        className="border border-slate-500 px-8 py-2"
-        type="text"
-        placeholder="Topic Title"
-      />
-      <input
-        className="border border-slate-500 px-8 py-2"
-        type="text"
-        placeholder="Topic Description"
-      />
-      <button className="bg-green-600 font-bold text-white py-3 px-6 w-fit">
-        Update Topic
-      </button>
-    </form>
-  );
+import EditTopicForm from "@/components/EditTopicForm";
+
+const getTopicById = async (id) => {
+  try {
+    const res = await fetch(`http://localhost:3000/api/topics/${id}`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch topic");
+    }
+
+    return res.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export default async function EditTopic({ params }) {
+  const { id } = params;
+  const { topic } = await getTopicById(id);
+  const { title, description } = topic;
+
+  return <EditTopicForm id={id} title={title} description={description} />;
 }
